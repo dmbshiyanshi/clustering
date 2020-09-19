@@ -3,7 +3,8 @@ import matplotlib.pyplot as plt
 from sklearn.cluster import KMeans
 import pandas as pd
 from sklearn.cluster import AgglomerativeClustering
-from sklearn.metrics import confusion_matrix
+from sklearn.metrics import silhouette_score
+from sklearn.metrics import davies_bouldin_score
 from sklearn.cluster import DBSCAN
 import numpy as np
 
@@ -44,7 +45,7 @@ def kmeans(n_clusters, fig=False):
         plt.ylabel("Sepal.Width")
         plt.title("Kmeas Clustering")
         plt.show()
-    return np.sum(predictions == iris_label) / len(predictions)
+    return silhouette_score(iris_data, predictions), davies_bouldin_score(iris_data, predictions)
 
 def AGNES(n_clusters, fig=False):
     # 数据集
@@ -67,7 +68,7 @@ def AGNES(n_clusters, fig=False):
         plt.ylabel("Sepal.Width")
         plt.title("AGNES Clustering")
         plt.show()
-    return np.sum(predictions == iris_label) / len(predictions)
+    return silhouette_score(iris_data, predictions), davies_bouldin_score(iris_data, predictions)
 
 def Dbscan(eps, min_samples, fig=False):
     # 数据集
@@ -79,7 +80,7 @@ def Dbscan(eps, min_samples, fig=False):
     model.fit(iris_data)
     predictions = model.labels_
     if fig:
-        # 绘制k-means结果
+        # 绘制dbscan结果
         plt.figure()
         d0 = iris_data[predictions == -1]
         plt.plot(d0[:, 0], d0[:, 1], 'r.')
@@ -87,13 +88,17 @@ def Dbscan(eps, min_samples, fig=False):
         plt.plot(d1[:, 0], d1[:, 1], 'go')
         d2 = iris_data[predictions == 1]
         plt.plot(d2[:, 0], d2[:, 1], 'b*')
+        d3 = iris_data[predictions == 2]
+        plt.plot(d3[:, 0], d3[:, 1], 'k+')
+        d4 = iris_data[predictions == 3]
+        plt.plot(d4[:, 0], d4[:, 1], 'yx')
         plt.xlabel("Sepal.Length")
         plt.ylabel("Sepal.Width")
         plt.title("DBSCAN Clustering")
         plt.show()
-    return np.sum(predictions == iris_label) / len(predictions)
+    return silhouette_score(iris_data, predictions), davies_bouldin_score(iris_data, predictions)
 
 if __name__ == "__main__":
-    # print(kmeans(4, True))
-    # print(Dbscan(0.4, 4, True))
+    print(kmeans(3, True))
+    print(Dbscan(0.4, 4, True))
     print(AGNES(3, True))
